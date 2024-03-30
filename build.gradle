@@ -15,9 +15,7 @@ sonar {
 
 group = 'co.edu.uniquindio'
 version = '0.0.1-SNAPSHOT'
-
-java {
-}
+description 'BarberiaVIP'
 
 configurations {
 	compileOnly {
