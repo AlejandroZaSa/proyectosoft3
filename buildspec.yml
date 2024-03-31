@@ -14,12 +14,8 @@ phases:
       - echo Build completed
 artifacts:
   files:
-    - appspec.yml
     - build/libs/*.jar
     - scripts/*.sh
-  #com/mycompany/app/HelloWorld.java, specifying yes will place this file in /HelloWorld.java
+    - appspec.yml
   discard-paths: yes
 
-cache:
-  paths:
-    - '/root/.gradle/caches/**/*'
