@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -31,7 +32,7 @@ public class Servicio {
     @Column(nullable = false)
     private boolean activo;
 
-    @ManyToMany
-    private List<SolicitudCita> citas;
+    @ManyToMany(mappedBy = "servicios")
+    private Set<SolicitudCita> citas;
 
 }

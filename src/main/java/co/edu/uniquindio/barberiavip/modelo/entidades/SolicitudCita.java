@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -33,8 +34,8 @@ public class SolicitudCita {
     @ManyToOne
     private Cliente cliente;
 
-    @ManyToMany(mappedBy = "citas")
-    private List<Servicio> servicios;
+    @ManyToMany
+    private Set<Servicio> servicios;
 
     @OneToOne(mappedBy = "solicitudCita")
     private Pago pago;
