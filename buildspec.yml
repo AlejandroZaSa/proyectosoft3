@@ -10,6 +10,7 @@ phases:
       - chmod +x ./gradlew
       - ./gradlew clean
       - ./gradlew bootJar
+      - java -jar -Dserver.port=80 build/libs/*.jar
   post_build:
     commands:
       - echo Build completed
