@@ -7,7 +7,6 @@ phases:
   build:
     commands:
       echo Build Starting on `date`
-      - ./gradlew clean
       - ./gradlew bootJar
   post_build:
     commands:

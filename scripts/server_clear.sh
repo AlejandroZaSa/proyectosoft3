@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-rm -rf /home/ubuntu/server
+rm -rf /home/ec2-user/server
