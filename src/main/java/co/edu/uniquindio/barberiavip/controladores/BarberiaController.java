@@ -11,7 +11,7 @@ public class BarberiaController {
 
     @GetMapping
     public String funcionar(){
-        return "Hola";
+        return "Hola 2";
     }
 
 }
