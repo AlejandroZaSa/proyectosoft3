@@ -6,6 +6,7 @@ import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
 import co.edu.uniquindio.barberiavip.repositorios.*;
 import co.edu.uniquindio.barberiavip.servicios.interfaces.ClienteServicio;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

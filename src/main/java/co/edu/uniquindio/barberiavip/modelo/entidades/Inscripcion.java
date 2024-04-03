@@ -36,7 +36,7 @@ public class Inscripcion {
     @ManyToOne
     private Cliente cliente;
 
-    @OneToOne(mappedBy = "inscripcion")
+    @OneToOne
     private Pago pago;
 
 }

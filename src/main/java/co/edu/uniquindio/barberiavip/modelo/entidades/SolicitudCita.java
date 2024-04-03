@@ -37,7 +37,7 @@ public class SolicitudCita {
     @ManyToMany
     private Set<Servicio> servicios;
 
-    @OneToOne(mappedBy = "solicitudCita")
+    @OneToOne
     private Pago pago;
 
 }
