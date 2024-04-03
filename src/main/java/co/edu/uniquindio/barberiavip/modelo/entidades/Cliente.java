@@ -30,7 +30,8 @@ public class Cliente {
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false)
+    @Lob
     private String password;
 
     @Column(nullable = false)

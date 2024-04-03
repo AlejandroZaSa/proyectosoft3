@@ -31,10 +31,10 @@ public class Pago {
     @ManyToOne
     private MetodoPago metodoPago;
 
-    @OneToOne(mappedBy = "inscripcion")
+    @OneToOne(mappedBy = "pago")
     private Inscripcion inscripcion;
 
-    @OneToOne(mappedBy = "inscripcion")
+    @OneToOne(mappedBy = "pago")
     private SolicitudCita solicitudCita;
 
 }
