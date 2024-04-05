@@ -4,7 +4,7 @@ public record ItemServicioDTO(
 
 
         int idServicio,
-        
+
         String descripcion,
 
         float costo
