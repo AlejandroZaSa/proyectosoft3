@@ -72,7 +72,7 @@ public class BarberiaImpl implements BarberiaServicio {
             listaServicios.add(new ItemServicioDTO(
 
                     s.getId(),
-                    s.getNombre(),
+                 
                     s.getDescripcion(),
                     s.getCosto()
             ));
