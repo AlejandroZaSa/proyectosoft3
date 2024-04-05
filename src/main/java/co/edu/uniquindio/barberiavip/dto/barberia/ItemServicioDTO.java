@@ -5,7 +5,6 @@ public record ItemServicioDTO(
 
         int idServicio,
 
-        String nombre,
 
         String descripcion,
 
