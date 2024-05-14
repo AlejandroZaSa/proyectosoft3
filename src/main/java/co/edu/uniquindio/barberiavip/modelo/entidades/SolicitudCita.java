@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -28,11 +29,18 @@ public class SolicitudCita {
     private LocalDate fecha;
 
     @Column(nullable = false)
+    private LocalTime hora;
+
+    @Column(nullable = false)
     private Estado estado;
 
     @JoinColumn(nullable = false)
     @ManyToOne
     private Cliente cliente;
+
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Barbero barbero;
 
     @ManyToMany
     private Set<Servicio> servicios;

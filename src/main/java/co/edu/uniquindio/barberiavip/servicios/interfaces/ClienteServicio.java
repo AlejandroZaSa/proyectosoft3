@@ -2,6 +2,7 @@ package co.edu.uniquindio.barberiavip.servicios.interfaces;
 
 import co.edu.uniquindio.barberiavip.dto.cliente.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ClienteServicio {
@@ -10,7 +11,7 @@ public interface ClienteServicio {
 
     int solicitarCita(SolicitudCitaDTO solicitudCitaDTO) throws Exception;
 
-
+    List<ItemBarberoCitaDTO> filtrarBarberoCita(LocalDate fecha) throws Exception;
 
     int inscribirCurso(InscripcionCursoDTO inscripcionCursoDTO) throws Exception;
 

@@ -39,4 +39,7 @@ public class Barbero {
 
     @OneToMany(mappedBy = "barbero")
     private List<Agenda> agendas;
+
+    @OneToMany(mappedBy = "barbero")
+    private List<SolicitudCita> citas;
 }
