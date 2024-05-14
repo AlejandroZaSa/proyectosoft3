@@ -58,6 +58,12 @@ public class AdministradorController {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, administradorServicio.obtenerCurso(codigoCurso)));
     }
 
+    @PostMapping("/actualizar-agenda/{codigoBarbero}")
+    public ResponseEntity<MensajeDTO<String>> obtenerCurso(@PathVariable int codigoBarbero, @Valid @RequestBody List<ItemAgendaDTO> agenda) throws Exception {
+        administradorServicio.actualizarAgenda(codigoBarbero,agenda);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Agenda actualizado correctamente"));
+    }
+
     @GetMapping("/obtener-servicio/{codigoServicio}")
     public ResponseEntity<MensajeDTO<ServicioDTO>> obtenerServicio(@PathVariable int codigoServicio) throws Exception {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, administradorServicio.obtenerServicio(codigoServicio)));

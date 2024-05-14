@@ -6,6 +6,8 @@ import java.time.LocalTime;
 
 public record ItemAgendaDTO(
 
+        int idBarbero,
+
         int idAgenda,
 
         Dia dia,

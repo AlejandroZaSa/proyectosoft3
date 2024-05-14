@@ -1,23 +1,24 @@
 package co.edu.uniquindio.barberiavip.modelo.entidades;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.io.Serializable;
 
-@Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Cliente {
+@AllArgsConstructor
+@Document("clientes")
+public class ClienteMongo implements Serializable {
+
+    @Transient
+    public static final String SEQUENCE_NAME = "clientes_sequence";
 
     @Id
-    @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(nullable = false)
     private String nombre;
@@ -37,11 +38,5 @@ public class Cliente {
 
     @Column(nullable = false)
     private boolean activo;
-
-    @OneToMany(mappedBy = "cliente")
-    private List<SolicitudCita> citas;
-
-    @OneToMany(mappedBy = "cliente")
-    private List<Inscripcion> inscripciones;
 
 }

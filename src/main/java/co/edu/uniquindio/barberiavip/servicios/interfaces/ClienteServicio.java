@@ -10,6 +10,8 @@ public interface ClienteServicio {
 
     int solicitarCita(SolicitudCitaDTO solicitudCitaDTO) throws Exception;
 
+
+
     int inscribirCurso(InscripcionCursoDTO inscripcionCursoDTO) throws Exception;
 
     List<ItemInscripcionCursoDTO> cargarInscripciones(int codigoCliente) throws Exception;

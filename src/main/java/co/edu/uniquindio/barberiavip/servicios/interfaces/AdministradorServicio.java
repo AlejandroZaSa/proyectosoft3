@@ -26,7 +26,7 @@ public interface AdministradorServicio {
 
     void cambiarEstadoCita(EstadoCitaDTO estadoCitaDTO) throws Exception;
 
-    void actualizarAgenda(List<ItemAgendaDTO> agendaDTO) throws Exception;
+    int actualizarAgenda(int codigoBarbero, List<ItemAgendaDTO> agendaDTO) throws Exception;
 
     List<ItemAgendaDTO> cargarAgenda(int idBarbero) throws Exception;
 }

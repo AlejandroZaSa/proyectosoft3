@@ -12,4 +12,6 @@ public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
 
     @Query("select a from Agenda a where a.barbero.id = :idBarbero")
     List<Agenda> buscarAgendaBarbero(int idBarbero);
+
+    List<Agenda> findAllByBarberoId(int id);
 }

@@ -5,6 +5,7 @@ import co.edu.uniquindio.barberiavip.modelo.entidades.*;
 import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
 import co.edu.uniquindio.barberiavip.repositorios.*;
 import co.edu.uniquindio.barberiavip.servicios.interfaces.AdministradorServicio;
+import jakarta.mail.FetchProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class AdministradorServicioImpl implements AdministradorServicio {
     private final InscripcionRepository inscripcionRepository;
     private final SolicitudCitaRepository solicitudCitaRepository;
     private final PagoRepository pagoRepository;
+    private final BarberoRepository barberoRepository;
 
     @Override
     public int crearCurso(CursoDTO cursoDTO) throws Exception {
@@ -181,7 +183,7 @@ public class AdministradorServicioImpl implements AdministradorServicio {
 
         buscado.setEstado(estadoInscripcionDTO.estado());
 
-        if(estadoInscripcionDTO.estado()==Estado.PAGADO){
+        if (estadoInscripcionDTO.estado() == Estado.PAGADO) {
             Optional<Pago> pago = pagoRepository.findById(buscado.getPago().getId());
 
             if (pago.isEmpty()) {
@@ -209,7 +211,7 @@ public class AdministradorServicioImpl implements AdministradorServicio {
 
         buscado.setEstado(estadoCitaDTO.estado());
 
-        if(estadoCitaDTO.estado()==Estado.PAGADO){
+        if (estadoCitaDTO.estado() == Estado.PAGADO) {
             Optional<Pago> pago = pagoRepository.findById(buscado.getPago().getId());
 
             if (pago.isEmpty()) {
@@ -226,24 +228,76 @@ public class AdministradorServicioImpl implements AdministradorServicio {
     }
 
     @Override
-    public void actualizarAgenda(List<ItemAgendaDTO> agendaDTO) throws Exception {
+    public int actualizarAgenda(int idBarbero, List<ItemAgendaDTO> agendaDTO) throws Exception {
 
+        Optional<Barbero> barbero = barberoRepository.findById(idBarbero);
+        if (barbero.isEmpty()) {
+            throw new Exception("No existe un barbero con ese codigo");
+        }
+
+        Barbero buscado = barbero.get();
+
+        List<Agenda> agendas = agendaRepository.findAllByBarberoId(buscado.getId());
+
+
+        for (ItemAgendaDTO itemAgendaDTO : agendaDTO) {
+
+            if (itemAgendaDTO.idAgenda() > 0) {
+                if (actualizarAgenda(agendas, itemAgendaDTO)) {
+                    Agenda agenda = agendaRepository.findById(itemAgendaDTO.idAgenda()).get();
+                    agenda.setDia(itemAgendaDTO.dia());
+                    if (itemAgendaDTO.horaEntrada().isBefore(itemAgendaDTO.horaSalida())) {
+                        agenda.setHoraEntrada(itemAgendaDTO.horaEntrada());
+                        agenda.setHoraSalida(itemAgendaDTO.horaSalida());
+                    } else {
+                        throw new Exception("La hora de entrada no puede estar despues a la hora de salida");
+                    }
+                    agendaRepository.save(agenda);
+                } else {
+                    agendaRepository.deleteById(itemAgendaDTO.idAgenda());
+                }
+            } else {
+                Agenda agenda = new Agenda();
+                agenda.setBarbero(buscado);
+                agenda.setDia(itemAgendaDTO.dia());
+                if (itemAgendaDTO.horaEntrada().isBefore(itemAgendaDTO.horaSalida())) {
+                    agenda.setHoraEntrada(itemAgendaDTO.horaEntrada());
+                    agenda.setHoraSalida(itemAgendaDTO.horaSalida());
+                } else {
+                    throw new Exception("La hora de entrada no puede estar despues a la hora de salida");
+                }
+                agendaRepository.save(agenda);
+            }
+        }
+
+        return buscado.getId();
+    }
+
+    public boolean actualizarAgenda(List<Agenda> agendas, ItemAgendaDTO nuevo) {
+
+        for (Agenda agenda : agendas) {
+            if (agenda.getId() == nuevo.idAgenda()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
-    public List<ItemAgendaDTO> cargarAgenda(int idBarbero) throws Exception{
+    public List<ItemAgendaDTO> cargarAgenda(int idBarbero) throws Exception {
 
         List<Agenda> agenda = agendaRepository.buscarAgendaBarbero(idBarbero);
 
-        if(agenda.isEmpty()){
+        if (agenda.isEmpty()) {
 
             throw new Exception("No existe agenda para el barbero con codigo" + idBarbero);
         }
         List<ItemAgendaDTO> listaAgenda = new ArrayList<>();
 
-        for(Agenda a: agenda){
+        for (Agenda a : agenda) {
             listaAgenda.add(new ItemAgendaDTO(
-
+                    a.getBarbero().getId(),
                     a.getId(),
                     a.getDia(),
                     a.getHoraEntrada(),
