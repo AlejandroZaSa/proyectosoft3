@@ -20,11 +20,6 @@ public class BarberiaController {
 
     private final BarberiaServicio barberiaServicio;
 
-    @GetMapping("/func")
-    public ResponseEntity<MensajeDTO<String>> funcionar(){
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Funciona"));
-    }
-
     @GetMapping("/estados")
     public ResponseEntity<MensajeDTO<List<Estado>>> cargarListaEstadosPqrs(){
         return ResponseEntity.ok().body( new MensajeDTO<>(false, barberiaServicio.cargarListaEstados()));

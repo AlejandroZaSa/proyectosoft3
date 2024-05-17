@@ -1,6 +1,8 @@
 package co.edu.uniquindio.barberiavip.servicios.interfaces;
 
 import co.edu.uniquindio.barberiavip.dto.administrador.*;
+import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
+import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
 
 import java.util.List;
 
@@ -29,4 +31,8 @@ public interface AdministradorServicio {
     int actualizarAgenda(int codigoBarbero, List<ItemAgendaDTO> agendaDTO) throws Exception;
 
     List<ItemAgendaDTO> cargarAgenda(int idBarbero) throws Exception;
+
+    List<ItemCursoDTO> listarCursos() throws Exception;
+
+    List<ItemServicioDTO> listarServicios() throws Exception;
 }

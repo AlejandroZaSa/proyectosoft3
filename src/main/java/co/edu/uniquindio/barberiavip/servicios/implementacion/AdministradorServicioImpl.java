@@ -1,6 +1,8 @@
 package co.edu.uniquindio.barberiavip.servicios.implementacion;
 
 import co.edu.uniquindio.barberiavip.dto.administrador.*;
+import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
+import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
 import co.edu.uniquindio.barberiavip.modelo.entidades.*;
 import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
 import co.edu.uniquindio.barberiavip.repositorios.*;
@@ -306,5 +308,58 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         }
 
         return listaAgenda;
+    }
+
+    @Override
+    public List<ItemCursoDTO> listarCursos() throws Exception {
+        List<Curso> cursos = cursoRepository.findAll();
+
+        if (cursos.isEmpty()) {
+            throw new Exception("No hay cursos registrados");
+        }
+
+        List<ItemCursoDTO> listaCursos = new ArrayList<>();
+
+        for (Curso c : cursos) {
+
+            listaCursos.add(new ItemCursoDTO(
+
+                    c.getId(),
+                    c.getCosto(),
+                    c.getNombre(),
+                    c.getDescripcion(),
+                    c.getFechaInicio(),
+                    c.getFechaFin()
+            ));
+
+        }
+
+        return listaCursos;
+    }
+
+    @Override
+    public List<ItemServicioDTO> listarServicios() throws Exception {
+
+        List<Servicio> servicios = servicioRepository.findAll();
+
+        if (servicios.isEmpty()) {
+            throw new Exception("No hay servicios registrados");
+        }
+
+        List<ItemServicioDTO> listaServicios = new ArrayList<>();
+
+        for (Servicio s : servicios) {
+
+            listaServicios.add(new ItemServicioDTO(
+
+                    s.getId(),
+                    s.getNombre(),
+                    s.getDescripcion(),
+                    s.getCosto()
+            ));
+
+        }
+
+        return listaServicios;
     }
 }

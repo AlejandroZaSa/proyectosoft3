@@ -45,6 +45,7 @@ public class ClienteServicioImpl implements ClienteServicio {
     private BarberoRepository barberoRepository;
     @Autowired
     private AgendaRepository agendaRepository;
+    private ServicioRepository servicioRepository;
 
     @Override
     public int registrarse(RegistroClienteDTO clienteDTO) throws Exception {
@@ -208,6 +209,17 @@ public class ClienteServicioImpl implements ClienteServicio {
         citaNueva.setHora(solicitudCitaDTO.hora());
         citaNueva.setEstado(Estado.PENDIENTE);
 
+        for (Integer s : solicitudCitaDTO.servicios()){
+            Optional<Servicio> servicio = servicioRepository.findById(s);
+
+            if(servicio.isEmpty()){
+                throw new Exception("No existe un servicio con el código" + s);
+
+            }
+
+            citaNueva.getServicios().add(servicio.get());
+        }
+
         SolicitudCita citaRegistrada = solicitudCitaRepository.save(citaNueva);
 
         emailServicio.enviarEmail(new EmailDTO("Agendamiento de Cita", cliente.get().getEmail(), "Haz agendado una cita con fecha " +
@@ -341,6 +353,7 @@ public class ClienteServicioImpl implements ClienteServicio {
         Pago pagoEncontrado = pago.get();
 
         pagoEncontrado.setMetodoPago(metodoPagoRegistrado);
+        pagoEncontrado.setEstado(Estado.PAGADO);
         pagoRepository.save(pagoEncontrado);
 
         return metodoPagoRegistrado.getId();

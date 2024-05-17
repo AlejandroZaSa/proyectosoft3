@@ -1,5 +1,6 @@
 package co.edu.uniquindio.barberiavip.dto.cliente;
 
+import co.edu.uniquindio.barberiavip.dto.administrador.ServicioDTO;
 import co.edu.uniquindio.barberiavip.modelo.entidades.Servicio;
 import org.springframework.cglib.core.Local;
 
@@ -19,6 +20,6 @@ public record SolicitudCitaDTO(
 
         LocalTime hora,
 
-        List<Servicio> servicios
+        List<Integer> servicios
 ) {
 }

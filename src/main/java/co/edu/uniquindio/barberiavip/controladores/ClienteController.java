@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class ClienteController {
     }
 
     @PostMapping("/inscribir-curso")
-    public ResponseEntity<MensajeDTO<String>> agendarCita(@Valid @RequestBody InscripcionCursoDTO inscripcionCursoDTO) throws Exception {
+    public ResponseEntity<MensajeDTO<String>> inscribirCurso(@Valid @RequestBody InscripcionCursoDTO inscripcionCursoDTO) throws Exception {
         clienteServicio.inscribirCurso(inscripcionCursoDTO);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Inscripcion creada con éxito"));
     }
@@ -43,6 +44,11 @@ public class ClienteController {
     public ResponseEntity<MensajeDTO<String>> pagar(@Valid @RequestBody MetodoPagoDTO metodoPagoDTO) throws Exception {
         clienteServicio.pagar(metodoPagoDTO);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito"));
+    }
+
+    @GetMapping("/filtrar-barbero-cita")
+    public ResponseEntity<MensajeDTO<List<ItemBarberoCitaDTO>>> pagar(@Valid @RequestBody LocalDate fecha) throws Exception {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, clienteServicio.filtrarBarberoCita(fecha)));
     }
 
 }
