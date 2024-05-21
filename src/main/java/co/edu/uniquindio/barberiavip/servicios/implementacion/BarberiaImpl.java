@@ -48,7 +48,8 @@ public class BarberiaImpl implements BarberiaServicio {
                     c.getNombre(),
                     c.getDescripcion(),
                     c.getFechaInicio(),
-                    c.getFechaFin()
+                    c.getFechaFin(),
+                    c.isActivo()
             ));
 
         }
@@ -74,7 +75,8 @@ public class BarberiaImpl implements BarberiaServicio {
                     s.getId(),
                     s.getNombre(),
                     s.getDescripcion(),
-                    s.getCosto()
+                    s.getCosto(),
+                    s.isActivo()
             ));
 
         }

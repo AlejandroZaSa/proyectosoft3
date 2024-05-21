@@ -165,7 +165,7 @@ public class ClienteServicioImpl implements ClienteServicio {
         }
         //________________________________________________________________________________________
         if (listaItemBarberoCitaDTOS.isEmpty()) {
-            throw new Exception("No hay disponibilidad de médicos, inténtalo más tarde");
+            throw new Exception("No hay disponibilidad de barberos, inténtalo más tarde");
         }
 
         return listaItemBarberoCitaDTOS;

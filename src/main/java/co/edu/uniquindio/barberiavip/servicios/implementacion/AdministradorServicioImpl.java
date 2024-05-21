@@ -329,7 +329,8 @@ public class AdministradorServicioImpl implements AdministradorServicio {
                     c.getNombre(),
                     c.getDescripcion(),
                     c.getFechaInicio(),
-                    c.getFechaFin()
+                    c.getFechaFin(),
+                    c.isActivo()
             ));
 
         }
@@ -355,7 +356,8 @@ public class AdministradorServicioImpl implements AdministradorServicio {
                     s.getId(),
                     s.getNombre(),
                     s.getDescripcion(),
-                    s.getCosto()
+                    s.getCosto(),
+                    s.isActivo()
             ));
 
         }

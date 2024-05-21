@@ -46,8 +46,8 @@ public class ClienteController {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito"));
     }
 
-    @GetMapping("/filtrar-barbero-cita")
-    public ResponseEntity<MensajeDTO<List<ItemBarberoCitaDTO>>> pagar(@Valid @RequestBody LocalDate fecha) throws Exception {
+    @GetMapping ("/filtrar-barbero-cita/{fecha}")
+    public ResponseEntity<MensajeDTO<List<ItemBarberoCitaDTO>>> pagar(@PathVariable LocalDate fecha) throws Exception {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, clienteServicio.filtrarBarberoCita(fecha)));
     }
 
