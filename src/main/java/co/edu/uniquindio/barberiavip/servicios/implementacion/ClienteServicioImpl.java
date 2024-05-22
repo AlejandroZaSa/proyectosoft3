@@ -48,7 +48,7 @@ public class ClienteServicioImpl implements ClienteServicio {
         Cliente cliente = null;
 
         if (!estaRepetidoCorreo(clienteDTO.email())) {
-            throw new Exception("El correo " + clienteDTO.email() + " ya está en uso");
+            throw new Exception("El  correo " + clienteDTO.email() + " ya está en uso");
         }
 
         cliente = new Cliente();
