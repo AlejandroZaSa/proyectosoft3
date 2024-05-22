@@ -7,14 +7,11 @@ public record ItemCursoDTO(
 
         int idCurso,
         float costo,
-
         String nombre,
-
         String descripcion,
-
         LocalDate fechaInicio,
-
-        LocalDate fechaFin
+        LocalDate fechaFin,
+        boolean activo
 
 ) {
 }

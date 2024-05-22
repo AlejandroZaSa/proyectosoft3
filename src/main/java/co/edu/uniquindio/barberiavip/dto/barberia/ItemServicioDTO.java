@@ -1,7 +1,5 @@
 package co.edu.uniquindio.barberiavip.dto.barberia;
 
-import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
-
 public record ItemServicioDTO(
 
 
@@ -11,8 +9,6 @@ public record ItemServicioDTO(
 
         String descripcion,
 
-        float costo,
-
-        boolean estado
+        float costo
 ) {
 }
