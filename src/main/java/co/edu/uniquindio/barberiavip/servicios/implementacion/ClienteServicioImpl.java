@@ -38,12 +38,7 @@ public class ClienteServicioImpl implements ClienteServicio {
     private final MetodoPagoRepository metodoPagoRepository;
     private final ClienteMongoRepository clienteMongoRepository;
     private final EmailServicio emailServicio;
-
-    @Autowired
-    private MongoOperations mongoOperations;
-    @Autowired
     private BarberoRepository barberoRepository;
-    @Autowired
     private AgendaRepository agendaRepository;
     private ServicioRepository servicioRepository;
 
@@ -51,54 +46,26 @@ public class ClienteServicioImpl implements ClienteServicio {
     public int registrarse(RegistroClienteDTO clienteDTO) throws Exception {
 
         Cliente cliente = null;
-        ClienteMongo clienteMongo = null;
 
-        try {
-            if (!estaRepetidoCorreo(clienteDTO.email())) {
-                throw new Exception("El correo " + clienteDTO.email() + " ya está en uso");
-            }
-
-            cliente = new Cliente();
-            cliente.setNombre(clienteDTO.nombre());
-            cliente.setApellido(clienteDTO.apellido());
-            cliente.setEmail(clienteDTO.email());
-            cliente.setTelefono(clienteDTO.telefono());
-
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            cliente.setPassword(passwordEncoder.encode(clienteDTO.password()));
-
-            cliente.setActivo(true);
-
-            Cliente clienteRegistrado = clienteRepository.save(cliente);
-
-            return clienteRegistrado.getId();
-        } catch (Exception e) {
-
-            if (!estaRepetidoCorreoMongo(clienteDTO.email())) {
-                throw new Exception("El correo " + clienteDTO.email() + " ya está en uso");
-            }
-
-            clienteMongo = new ClienteMongo();
-            clienteMongo.setId(generateSequence(ClienteMongo.SEQUENCE_NAME));
-            clienteMongo.setNombre(clienteDTO.nombre());
-            clienteMongo.setApellido(clienteDTO.apellido());
-            clienteMongo.setEmail(clienteDTO.email());
-            clienteMongo.setTelefono(clienteDTO.telefono());
-
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            clienteMongo.setPassword(passwordEncoder.encode(clienteDTO.password()));
-
-            clienteMongo.setActivo(true);
-            ClienteMongo clienteRegistrado = clienteMongoRepository.save(clienteMongo);
-
-            return (int) clienteRegistrado.getId();
+        if (!estaRepetidoCorreo(clienteDTO.email())) {
+            throw new Exception("El correo " + clienteDTO.email() + " ya está en uso");
         }
 
-    }
+        cliente = new Cliente();
+        cliente.setNombre(clienteDTO.nombre());
+        cliente.setApellido(clienteDTO.apellido());
+        cliente.setEmail(clienteDTO.email());
+        cliente.setTelefono(clienteDTO.telefono());
 
-    private boolean estaRepetidoCorreoMongo(String email) {
-        ClienteMongo cliente = clienteMongoRepository.findByEmail(email);
-        return cliente == null;
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        cliente.setPassword(passwordEncoder.encode(clienteDTO.password()));
+
+        cliente.setActivo(true);
+
+        Cliente clienteRegistrado = clienteRepository.save(cliente);
+
+        return clienteRegistrado.getId();
+
     }
 
     public boolean estaRepetidoCorreo(String email) {
@@ -165,7 +132,7 @@ public class ClienteServicioImpl implements ClienteServicio {
         }
         //________________________________________________________________________________________
         if (listaItemBarberoCitaDTOS.isEmpty()) {
-            throw new Exception("No hay disponibilidad de médicos, inténtalo más tarde");
+            throw new Exception("No hay disponibilidad de barberos, inténtalo más tarde");
         }
 
         return listaItemBarberoCitaDTOS;
@@ -209,10 +176,10 @@ public class ClienteServicioImpl implements ClienteServicio {
         citaNueva.setHora(solicitudCitaDTO.hora());
         citaNueva.setEstado(Estado.PENDIENTE);
 
-        for (Integer s : solicitudCitaDTO.servicios()){
+        for (Integer s : solicitudCitaDTO.servicios()) {
             Optional<Servicio> servicio = servicioRepository.findById(s);
 
-            if(servicio.isEmpty()){
+            if (servicio.isEmpty()) {
                 throw new Exception("No existe un servicio con el código" + s);
 
             }
@@ -285,7 +252,7 @@ public class ClienteServicioImpl implements ClienteServicio {
                     i.getCosto(),
                     i.getEstado(),
                     i.getCurso().getNombre(),
-                    i.getPago().getId()
+                    i.getPago() == null ? 0 : i.getPago().getId()
             ));
 
         }
@@ -312,7 +279,7 @@ public class ClienteServicioImpl implements ClienteServicio {
                     s.getCosto(),
                     s.getFecha(),
                     s.getEstado(),
-                    s.getPago().getId()
+                    s.getPago() == null ? 0 : s.getPago().getId()
             ));
 
         }
@@ -358,12 +325,4 @@ public class ClienteServicioImpl implements ClienteServicio {
 
         return metodoPagoRegistrado.getId();
     }
-
-    public long generateSequence(String seqName) {
-        DatabaseSequence counter = mongoOperations.findAndModify(query(where("_id").is(seqName)),
-                new Update().inc("seq", 1), options().returnNew(true).upsert(true),
-                DatabaseSequence.class);
-        return !Objects.isNull(counter) ? counter.getSeq() : 1;
-    }
-
 }

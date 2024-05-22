@@ -15,5 +15,6 @@ public record ItemSolicitudCitaDTO(
         Estado estado,
 
         int idPago
+
 ) {
 }

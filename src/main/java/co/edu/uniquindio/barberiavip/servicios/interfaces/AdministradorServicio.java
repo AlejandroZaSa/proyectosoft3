@@ -3,6 +3,8 @@ package co.edu.uniquindio.barberiavip.servicios.interfaces;
 import co.edu.uniquindio.barberiavip.dto.administrador.*;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.ItemInscripcionCursoDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.ItemSolicitudCitaDTO;
 
 import java.util.List;
 
@@ -35,4 +37,8 @@ public interface AdministradorServicio {
     List<ItemCursoDTO> listarCursos() throws Exception;
 
     List<ItemServicioDTO> listarServicios() throws Exception;
+
+    List<ItemSolicitudCitaDTO> listarCitas() throws Exception;
+
+    List<ItemInscripcionCursoDTO> listarInscripciones() throws Exception;
 }

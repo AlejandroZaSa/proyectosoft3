@@ -74,7 +74,8 @@ public class BarberiaImpl implements BarberiaServicio {
                     s.getId(),
                     s.getNombre(),
                     s.getDescripcion(),
-                    s.getCosto()
+                    s.getCosto(),
+                    s.isActivo()
             ));
 
         }

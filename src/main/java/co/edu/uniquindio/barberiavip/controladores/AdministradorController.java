@@ -4,6 +4,8 @@ import co.edu.uniquindio.barberiavip.dto.administrador.*;
 import co.edu.uniquindio.barberiavip.dto.autenticacionJwt.MensajeDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.ItemInscripcionCursoDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.ItemSolicitudCitaDTO;
 import co.edu.uniquindio.barberiavip.servicios.interfaces.AdministradorServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -96,5 +98,15 @@ public class AdministradorController {
     @GetMapping("/listar-cursos")
     public ResponseEntity<MensajeDTO<List<ItemCursoDTO>>> cargarCursos() throws Exception {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, administradorServicio.listarCursos()));
+    }
+
+    @GetMapping("/listar-inscripciones")
+    public ResponseEntity<MensajeDTO<List<ItemInscripcionCursoDTO>>> cargarInscripciones() throws Exception {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, administradorServicio.listarInscripciones()));
+    }
+
+    @GetMapping("/listar-citas")
+    public ResponseEntity<MensajeDTO<List<ItemSolicitudCitaDTO>>> cargarSolicitudesCitas() throws Exception {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, administradorServicio.listarCitas()));
     }
 }

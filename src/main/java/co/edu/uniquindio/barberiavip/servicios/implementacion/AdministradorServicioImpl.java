@@ -3,6 +3,8 @@ package co.edu.uniquindio.barberiavip.servicios.implementacion;
 import co.edu.uniquindio.barberiavip.dto.administrador.*;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.ItemInscripcionCursoDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.ItemSolicitudCitaDTO;
 import co.edu.uniquindio.barberiavip.modelo.entidades.*;
 import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
 import co.edu.uniquindio.barberiavip.repositorios.*;
@@ -355,11 +357,61 @@ public class AdministradorServicioImpl implements AdministradorServicio {
                     s.getId(),
                     s.getNombre(),
                     s.getDescripcion(),
-                    s.getCosto()
+                    s.getCosto(),
+                    s.isActivo()
             ));
 
         }
 
         return listaServicios;
+    }
+
+    @Override
+    public List<ItemSolicitudCitaDTO> listarCitas() throws Exception {
+
+        List<ItemSolicitudCitaDTO> listaSolicitudCitas = new ArrayList<>();
+
+        for (SolicitudCita s : solicitudCitaRepository.findAll()) {
+            listaSolicitudCitas.add(new ItemSolicitudCitaDTO(
+                    obtenerServicios(s),
+                    s.getCosto(),
+                    s.getFecha(),
+                    s.getEstado(),
+                    s.getPago()==null?0:s.getPago().getId()
+            ));
+        }
+        return listaSolicitudCitas;
+    }
+
+    private String obtenerServicios(SolicitudCita s) {
+
+        StringBuilder servicios = new StringBuilder();
+
+        for (Servicio servicio : s.getServicios()) {
+            servicios.append(servicio.getNombre()).append("\r\n");
+        }
+
+        return servicios.toString();
+    }
+
+    @Override
+    public List<ItemInscripcionCursoDTO> listarInscripciones() throws Exception {
+
+        List<ItemInscripcionCursoDTO> listaInscripcionCursoDTOS = new ArrayList<>();
+
+        for (Inscripcion i : inscripcionRepository.findAll()) {
+
+            listaInscripcionCursoDTOS.add(new ItemInscripcionCursoDTO(
+
+                    i.getFechaInscripcion(),
+                    i.getCosto(),
+                    i.getEstado(),
+                    i.getCurso().getNombre(),
+                    i.getPago()==null?0:i.getPago().getId()
+            ));
+
+        }
+
+        return listaInscripcionCursoDTOS;
     }
 }
