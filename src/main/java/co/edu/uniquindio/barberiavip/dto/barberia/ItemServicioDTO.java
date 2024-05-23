@@ -9,6 +9,8 @@ public record ItemServicioDTO(
 
         String descripcion,
 
-        float costo
+        float costo,
+
+        boolean activo
 ) {
 }

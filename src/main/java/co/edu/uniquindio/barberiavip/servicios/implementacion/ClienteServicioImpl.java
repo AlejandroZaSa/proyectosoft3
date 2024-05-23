@@ -9,21 +9,13 @@ import co.edu.uniquindio.barberiavip.repositorios.*;
 import co.edu.uniquindio.barberiavip.servicios.interfaces.ClienteServicio;
 import co.edu.uniquindio.barberiavip.servicios.interfaces.EmailServicio;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 @RequiredArgsConstructor
