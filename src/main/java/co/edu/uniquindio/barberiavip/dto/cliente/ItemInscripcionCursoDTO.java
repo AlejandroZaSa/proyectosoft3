@@ -14,6 +14,8 @@ public record ItemInscripcionCursoDTO(
 
         String nombreCurso,
 
-        int idPago
+        int idPago,
+
+        int idInscripcion
 ) {
 }

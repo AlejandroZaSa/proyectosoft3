@@ -186,21 +186,18 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         }
         Inscripcion buscado = opcionalInscripcion.get();
 
-        buscado.setEstado(estadoInscripcionDTO.estado());
+        Pago pago = new Pago();
 
-        if (estadoInscripcionDTO.estado() == Estado.PAGADO) {
-            Optional<Pago> pago = pagoRepository.findById(buscado.getPago().getId());
-
-            if (pago.isEmpty()) {
-                throw new Exception("No existe un pago con el código" + buscado.getPago().getId());
-            }
-
-            Pago pagoEncontrado = pago.get();
-            pagoEncontrado.setEstado(estadoInscripcionDTO.estado());
-            pagoEncontrado.setFechaPago(LocalDate.now());
-            pagoRepository.save(pagoEncontrado);
+        if (estadoInscripcionDTO.estado() == Estado.PAGADO && buscado.getEstado()!=Estado.PAGADO) {
+            buscado.setEstado(estadoInscripcionDTO.estado());
+            pago.setMonto(buscado.getCosto());
+            pago.setEstado(estadoInscripcionDTO.estado());
+            pago.setFechaPago(LocalDate.now());
+            pagoRepository.save(pago);
+        }else{
+            throw new Exception("La inscripcion ya está pagada");
         }
-
+        buscado.setPago(pago);
         inscripcionRepository.save(buscado);
     }
 
@@ -214,20 +211,19 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         }
         SolicitudCita buscado = opcionalSolicitud.get();
 
-        buscado.setEstado(estadoCitaDTO.estado());
+        Pago pago = new Pago();
 
-        if (estadoCitaDTO.estado() == Estado.PAGADO) {
-            Optional<Pago> pago = pagoRepository.findById(buscado.getPago().getId());
-
-            if (pago.isEmpty()) {
-                throw new Exception("No existe un pago con el código" + buscado.getPago().getId());
-            }
-
-            Pago pagoEncontrado = pago.get();
-            pagoEncontrado.setEstado(estadoCitaDTO.estado());
-            pagoEncontrado.setFechaPago(LocalDate.now());
-            pagoRepository.save(pagoEncontrado);
+        if (estadoCitaDTO.estado() == Estado.PAGADO && buscado.getEstado() != Estado.PAGADO) {
+            buscado.setEstado(estadoCitaDTO.estado());
+            pago.setEstado(estadoCitaDTO.estado());
+            pago.setFechaPago(LocalDate.now());
+            pago.setMonto(opcionalSolicitud.get().getCosto());
+            pagoRepository.save(pago);
+        }else{
+            throw new Exception("La cita ya está pagada");
         }
+
+        buscado.setPago(pago);
 
         solicitudCitaRepository.save(buscado);
     }
@@ -386,7 +382,8 @@ public class AdministradorServicioImpl implements AdministradorServicio {
                     s.getCosto(),
                     s.getFecha(),
                     s.getEstado(),
-                    s.getPago()==null?0:s.getPago().getId()
+                    s.getPago()==null?0:s.getPago().getId(),
+                    s.getId()
             ));
         }
         return listaSolicitudCitas;
@@ -423,7 +420,8 @@ public class AdministradorServicioImpl implements AdministradorServicio {
                     i.getCosto(),
                     i.getEstado(),
                     i.getCurso().getNombre(),
-                    i.getPago()==null?0:i.getPago().getId()
+                    i.getPago()==null?0:i.getPago().getId(),
+                    i.getId()
             ));
 
         }

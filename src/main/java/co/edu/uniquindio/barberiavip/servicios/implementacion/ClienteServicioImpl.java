@@ -216,13 +216,6 @@ public class ClienteServicioImpl implements ClienteServicio {
 
         Inscripcion inscripcionRegistrada = inscripcionRepository.save(inscripcion);
 
-        Pago pago = new Pago();
-
-        pago.setEstado(Estado.PENDIENTE);
-        pago.setMonto(cursoEncontrado.getCosto());
-        pago.setInscripcion(inscripcionRegistrada);
-        pagoRepository.save(pago);
-
         return inscripcionRegistrada.getId();
     }
 
@@ -245,7 +238,8 @@ public class ClienteServicioImpl implements ClienteServicio {
                     i.getCosto(),
                     i.getEstado(),
                     i.getCurso().getNombre(),
-                    i.getPago() == null ? 0 : i.getPago().getId()
+                    i.getPago() == null ? 0 : i.getPago().getId(),
+                    i.getId()
             ));
 
         }
@@ -272,7 +266,8 @@ public class ClienteServicioImpl implements ClienteServicio {
                     s.getCosto(),
                     s.getFecha(),
                     s.getEstado(),
-                    s.getPago() == null ? 0 : s.getPago().getId()
+                    s.getPago() == null ? 0 : s.getPago().getId(),
+                    s.getId()
             ));
 
         }
