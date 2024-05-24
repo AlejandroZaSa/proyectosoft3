@@ -2,8 +2,6 @@ package co.edu.uniquindio.barberiavip.modelo.entidades;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.List;
 
 @Entity

@@ -28,7 +28,6 @@ public class ClienteServicioImpl implements ClienteServicio {
     private final InscripcionRepository inscripcionRepository;
     private final PagoRepository pagoRepository;
     private final MetodoPagoRepository metodoPagoRepository;
-    private final ClienteMongoRepository clienteMongoRepository;
     private final EmailServicio emailServicio;
     private BarberoRepository barberoRepository;
     private AgendaRepository agendaRepository;
@@ -168,17 +167,19 @@ public class ClienteServicioImpl implements ClienteServicio {
         citaNueva.setHora(solicitudCitaDTO.hora());
         citaNueva.setEstado(Estado.PENDIENTE);
 
+        float costoTotal = 0;
+
         for (Integer s : solicitudCitaDTO.servicios()) {
             Optional<Servicio> servicio = servicioRepository.findById(s);
-
             if (servicio.isEmpty()) {
                 throw new Exception("No existe un servicio con el código" + s);
 
             }
-
+            costoTotal = costoTotal + servicio.get().getCosto();
             citaNueva.getServicios().add(servicio.get());
-        }
 
+        }
+        citaNueva.setCosto(costoTotal);
         SolicitudCita citaRegistrada = solicitudCitaRepository.save(citaNueva);
 
         emailServicio.enviarEmail(new EmailDTO("Agendamiento de Cita", cliente.get().getEmail(), "Haz agendado una cita con fecha " +

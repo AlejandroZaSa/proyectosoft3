@@ -5,6 +5,7 @@ import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
 import co.edu.uniquindio.barberiavip.dto.cliente.ItemInscripcionCursoDTO;
 import co.edu.uniquindio.barberiavip.dto.cliente.ItemSolicitudCitaDTO;
+import co.edu.uniquindio.barberiavip.dto.cliente.SolicitudCitaDTO;
 import co.edu.uniquindio.barberiavip.modelo.entidades.*;
 import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
 import co.edu.uniquindio.barberiavip.repositorios.*;
@@ -370,9 +371,16 @@ public class AdministradorServicioImpl implements AdministradorServicio {
     @Override
     public List<ItemSolicitudCitaDTO> listarCitas() throws Exception {
 
+
+        List<SolicitudCita> citas = solicitudCitaRepository.findAll();
+
+        if (citas.isEmpty()) {
+            throw new Exception("No hay citas registradas");
+        }
+
         List<ItemSolicitudCitaDTO> listaSolicitudCitas = new ArrayList<>();
 
-        for (SolicitudCita s : solicitudCitaRepository.findAll()) {
+        for (SolicitudCita s : citas) {
             listaSolicitudCitas.add(new ItemSolicitudCitaDTO(
                     obtenerServicios(s),
                     s.getCosto(),
@@ -398,9 +406,16 @@ public class AdministradorServicioImpl implements AdministradorServicio {
     @Override
     public List<ItemInscripcionCursoDTO> listarInscripciones() throws Exception {
 
+        List<Inscripcion> inscripciones = inscripcionRepository.findAll();
+
+        if (inscripciones.isEmpty()) {
+            throw new Exception("No hay inscripciones registradas");
+        }
+
+
         List<ItemInscripcionCursoDTO> listaInscripcionCursoDTOS = new ArrayList<>();
 
-        for (Inscripcion i : inscripcionRepository.findAll()) {
+        for (Inscripcion i : inscripciones) {
 
             listaInscripcionCursoDTOS.add(new ItemInscripcionCursoDTO(
 
