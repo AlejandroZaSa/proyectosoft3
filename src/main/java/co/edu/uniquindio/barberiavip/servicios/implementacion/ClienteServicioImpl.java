@@ -29,9 +29,9 @@ public class ClienteServicioImpl implements ClienteServicio {
     private final PagoRepository pagoRepository;
     private final MetodoPagoRepository metodoPagoRepository;
     private final EmailServicio emailServicio;
-    private BarberoRepository barberoRepository;
-    private AgendaRepository agendaRepository;
-    private ServicioRepository servicioRepository;
+    private final BarberoRepository barberoRepository;
+    private final AgendaRepository agendaRepository;
+    private final ServicioRepository servicioRepository;
 
     @Override
     public int registrarse(RegistroClienteDTO clienteDTO) throws Exception {

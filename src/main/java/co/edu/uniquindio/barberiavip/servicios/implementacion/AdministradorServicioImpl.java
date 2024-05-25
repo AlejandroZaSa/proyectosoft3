@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -230,59 +231,68 @@ public class AdministradorServicioImpl implements AdministradorServicio {
 
     @Override
     public int actualizarAgenda(int idBarbero, List<ItemAgendaDTO> agendaDTO) throws Exception {
-
         Optional<Barbero> barbero = barberoRepository.findById(idBarbero);
         if (barbero.isEmpty()) {
             throw new Exception("No existe un barbero con ese codigo");
         }
 
         Barbero buscado = barbero.get();
+        List<Agenda> agendasExistentes = agendaRepository.findAllByBarberoId(buscado.getId());
+        List<Integer> agendasAEliminar = new ArrayList<>();
 
-        List<Agenda> agendas = agendaRepository.findAllByBarberoId(buscado.getId());
+        // Crear una lista con los IDs de las agendas que vienen desde el front
+        List<Integer> agendasDesdeElFront = agendaDTO.stream()
+                .filter(item -> item.idAgenda() > 0)
+                .map(ItemAgendaDTO::idAgenda)
+                .collect(Collectors.toList());
 
+        // Encontrar las agendas que hay que eliminar
+        for (Agenda agenda : agendasExistentes) {
+            if (!agendasDesdeElFront.contains(agenda.getId())) {
+                agendasAEliminar.add(agenda.getId());
+            }
+        }
 
+        // Eliminar las agendas que no están en el front
+        for (Integer idAgenda : agendasAEliminar) {
+            agendaRepository.deleteById(idAgenda);
+        }
+
+        // Actualizar o crear las agendas restantes
         for (ItemAgendaDTO itemAgendaDTO : agendaDTO) {
-
             if (itemAgendaDTO.idAgenda() > 0) {
-                if (actualizarAgenda(agendas, itemAgendaDTO)) {
-                    Agenda agenda = agendaRepository.findById(itemAgendaDTO.idAgenda()).get();
-                    agenda.setDia(itemAgendaDTO.dia());
-                    if (itemAgendaDTO.horaEntrada().isBefore(itemAgendaDTO.horaSalida())) {
-                        agenda.setHoraEntrada(itemAgendaDTO.horaEntrada());
-                        agenda.setHoraSalida(itemAgendaDTO.horaSalida());
-                    } else {
-                        throw new Exception("La hora de entrada no puede estar despues a la hora de salida");
-                    }
-                    agendaRepository.save(agenda);
-                } else {
-                    agendaRepository.deleteById(itemAgendaDTO.idAgenda());
-                }
+                actualizarAgenda(itemAgendaDTO, buscado);
             } else {
-                Agenda agenda = new Agenda();
-                agenda.setBarbero(buscado);
-                agenda.setDia(itemAgendaDTO.dia());
-                if (itemAgendaDTO.horaEntrada().isBefore(itemAgendaDTO.horaSalida())) {
-                    agenda.setHoraEntrada(itemAgendaDTO.horaEntrada());
-                    agenda.setHoraSalida(itemAgendaDTO.horaSalida());
-                } else {
-                    throw new Exception("La hora de entrada no puede estar despues a la hora de salida");
-                }
-                agendaRepository.save(agenda);
+                crearAgenda(itemAgendaDTO, buscado);
             }
         }
 
         return buscado.getId();
     }
 
-    public boolean actualizarAgenda(List<Agenda> agendas, ItemAgendaDTO nuevo) {
-
-        for (Agenda agenda : agendas) {
-            if (agenda.getId() == nuevo.idAgenda()) {
-                return true;
-            }
+    private void actualizarAgenda(ItemAgendaDTO itemAgendaDTO, Barbero buscado) throws Exception {
+        Agenda agenda = agendaRepository.findById(itemAgendaDTO.idAgenda()).orElseThrow(() -> new Exception("No existe una agenda con ese ID"));
+        agenda.setDia(itemAgendaDTO.dia());
+        if (itemAgendaDTO.horaEntrada().isBefore(itemAgendaDTO.horaSalida())) {
+            agenda.setHoraEntrada(itemAgendaDTO.horaEntrada());
+            agenda.setHoraSalida(itemAgendaDTO.horaSalida());
+        } else {
+            throw new Exception("La hora de entrada no puede estar despues a la hora de salida");
         }
+        agendaRepository.save(agenda);
+    }
 
-        return false;
+    private void crearAgenda(ItemAgendaDTO itemAgendaDTO, Barbero buscado) throws Exception {
+        Agenda agenda = new Agenda();
+        agenda.setBarbero(buscado);
+        agenda.setDia(itemAgendaDTO.dia());
+        if (itemAgendaDTO.horaEntrada().isBefore(itemAgendaDTO.horaSalida())) {
+            agenda.setHoraEntrada(itemAgendaDTO.horaEntrada());
+            agenda.setHoraSalida(itemAgendaDTO.horaSalida());
+        } else {
+            throw new Exception("La hora de entrada no puede estar despues a la hora de salida");
+        }
+        agendaRepository.save(agenda);
     }
 
     @Override
@@ -408,7 +418,6 @@ public class AdministradorServicioImpl implements AdministradorServicio {
         if (inscripciones.isEmpty()) {
             throw new Exception("No hay inscripciones registradas");
         }
-
 
         List<ItemInscripcionCursoDTO> listaInscripcionCursoDTOS = new ArrayList<>();
 
