@@ -8,6 +8,7 @@ import co.edu.uniquindio.barberiavip.servicios.interfaces.BarberiaServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +34,12 @@ public class BarberiaController {
     @GetMapping("/listar-servicio")
     public ResponseEntity<MensajeDTO<List<ItemServicioDTO>>> listarServicios() throws Exception{
         return ResponseEntity.ok().body(new MensajeDTO<>(false, barberiaServicio.listarServicios()));
+    }
+
+    @GetMapping("/enviar-link-recuperacion/{email}")
+    public ResponseEntity<MensajeDTO<String>> enviarLinkRecuperacion(@PathVariable String email) throws Exception{
+        barberiaServicio.enviarLinkRecuperacion(email);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Revisa el correo e ingresa al link de recuperación enviado"));
     }
 
 }

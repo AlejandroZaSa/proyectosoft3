@@ -1,5 +1,6 @@
 package co.edu.uniquindio.barberiavip.servicios.interfaces;
 
+import co.edu.uniquindio.barberiavip.dto.barberia.CambioPasswordDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemCursoDTO;
 import co.edu.uniquindio.barberiavip.dto.barberia.ItemServicioDTO;
 import co.edu.uniquindio.barberiavip.modelo.enums.Estado;
@@ -13,4 +14,8 @@ public interface BarberiaServicio {
     List<ItemCursoDTO> listarCursos() throws Exception;
 
     List<ItemServicioDTO> listarServicios() throws Exception;
+
+    void cambiarPassword(CambioPasswordDTO cambioPasswordDTO) throws Exception;
+
+    void enviarLinkRecuperacion(String email) throws Exception;
 }
