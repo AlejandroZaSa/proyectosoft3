@@ -2,9 +2,7 @@ package co.edu.uniquindio.barberiavip.dto.cliente;
 
 import java.time.LocalDate;
 
-public record PagoCitaDTO (
-
-        int idCita,
+public record MetodoPagoDTO(
 
         String numeroTarjeta,
 
@@ -14,7 +12,8 @@ public record PagoCitaDTO (
 
         String primerNombre,
 
-        String apellido
-) {
+        String apellido,
 
+        int idPago
+) {
 }

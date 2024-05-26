@@ -13,7 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -167,8 +169,6 @@ public class ClienteServicioImpl implements ClienteServicio {
 
         float costoTotal = 0;
 
-        Set<Servicio> lista = new HashSet<>();
-
         for (Integer s : solicitudCitaDTO.servicios()) {
             Optional<Servicio> servicio = servicioRepository.findById(s);
             if (servicio.isEmpty()) {
@@ -176,13 +176,9 @@ public class ClienteServicioImpl implements ClienteServicio {
 
             }
             costoTotal = costoTotal + servicio.get().getCosto();
-            lista.add(servicio.get());
+            citaNueva.getServicios().add(servicio.get());
+
         }
-
-        citaNueva.setServicios(lista);
-
-        System.out.println("costo:" + costoTotal);
-
         citaNueva.setCosto(costoTotal);
         SolicitudCita citaRegistrada = solicitudCitaRepository.save(citaNueva);
 
@@ -282,74 +278,6 @@ public class ClienteServicioImpl implements ClienteServicio {
         return itemSolicitudCitaDTOS;
     }
 
-    @Override
-    public int pagoInscripcion(PagoInscripcionDTO pagoInscripcionDTO) throws Exception {
-
-        Optional<Inscripcion> inscripcion = inscripcionRepository.findById(pagoInscripcionDTO.idInscripcion());
-
-        if (inscripcion.isEmpty()) {
-            throw new Exception("No existe una inscripción con el código" + pagoInscripcionDTO.idInscripcion());
-        }
-
-        MetodoPago metodoPago = new MetodoPago();
-
-        metodoPago.setApellido(pagoInscripcionDTO.apellido());
-        metodoPago.setNumeroTarjeta(pagoInscripcionDTO.numeroTarjeta());
-        metodoPago.setCodigoSeguridad(pagoInscripcionDTO.codigoSeguridad());
-        metodoPago.setFechaExpiracion(pagoInscripcionDTO.fechaExpiracion());
-        metodoPago.setPrimerNombre(pagoInscripcionDTO.primerNombre());
-
-        MetodoPago metodoPagoRegistrado = metodoPagoRepository.save(metodoPago);
-
-        Pago pago = new Pago();
-        pago.setEstado(Estado.PAGADO);
-        pago.setMetodoPago(metodoPagoRegistrado);
-        pago.setMonto(inscripcion.get().getCosto());
-        pago.setFechaPago(LocalDate.now());
-
-        Pago pagoRegistrado = pagoRepository.save(pago);
-        inscripcion.get().setPago(pagoRegistrado);
-        inscripcion.get().setEstado(Estado.PAGADO);
-
-        inscripcionRepository.save(inscripcion.get());
-
-        return metodoPagoRegistrado.getId();
-    }
-
-    @Override
-    public int pagoCita(PagoCitaDTO pagoCitaDTO) throws Exception {
-
-        Optional<SolicitudCita> solicitudCita = solicitudCitaRepository.findById(pagoCitaDTO.idCita());
-
-        if (solicitudCita.isEmpty()) {
-            throw new Exception("No existe una cita con el código" + pagoCitaDTO.idCita());
-        }
-
-        MetodoPago metodoPago = new MetodoPago();
-
-        metodoPago.setApellido(pagoCitaDTO.apellido());
-        metodoPago.setNumeroTarjeta(pagoCitaDTO.numeroTarjeta());
-        metodoPago.setCodigoSeguridad(pagoCitaDTO.codigoSeguridad());
-        metodoPago.setFechaExpiracion(pagoCitaDTO.fechaExpiracion());
-        metodoPago.setPrimerNombre(pagoCitaDTO.primerNombre());
-
-        MetodoPago metodoPagoRegistrado = metodoPagoRepository.save(metodoPago);
-
-        Pago pago = new Pago();
-        pago.setEstado(Estado.PAGADO);
-        pago.setMetodoPago(metodoPagoRegistrado);
-        pago.setMonto(solicitudCita.get().getCosto());
-        pago.setFechaPago(LocalDate.now());
-
-        Pago pagoRegistrado = pagoRepository.save(pago);
-        solicitudCita.get().setPago(pagoRegistrado);
-        solicitudCita.get().setEstado(Estado.PAGADO);
-
-        solicitudCitaRepository.save(solicitudCita.get());
-
-        return metodoPagoRegistrado.getId();
-    }
-
     private String obtenerServicios(SolicitudCita s) {
 
         StringBuilder servicios = new StringBuilder();
@@ -361,5 +289,31 @@ public class ClienteServicioImpl implements ClienteServicio {
         return servicios.toString();
     }
 
+    @Override
+    public int pagar(MetodoPagoDTO metodoPagoDTO) throws Exception {
 
+        Optional<Pago> pago = pagoRepository.findById(metodoPagoDTO.idPago());
+
+        if (pago.isEmpty()) {
+            throw new Exception("No existe un pago con el código" + metodoPagoDTO.idPago());
+        }
+
+        MetodoPago metodoPago = new MetodoPago();
+
+        metodoPago.setApellido(metodoPagoDTO.apellido());
+        metodoPago.setNumeroTarjeta(metodoPagoDTO.numeroTarjeta());
+        metodoPago.setCodigoSeguridad(metodoPagoDTO.codigoSeguridad());
+        metodoPago.setFechaExpiracion(metodoPagoDTO.fechaExpiracion());
+        metodoPago.setPrimerNombre(metodoPagoDTO.primerNombre());
+
+        MetodoPago metodoPagoRegistrado = metodoPagoRepository.save(metodoPago);
+
+        Pago pagoEncontrado = pago.get();
+
+        pagoEncontrado.setMetodoPago(metodoPagoRegistrado);
+        pagoEncontrado.setEstado(Estado.PAGADO);
+        pagoRepository.save(pagoEncontrado);
+
+        return metodoPagoRegistrado.getId();
+    }
 }

@@ -40,22 +40,15 @@ public class ClienteController {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, clienteServicio.cargarCitas(idCliente)));
     }
 
-    @PostMapping("/pagar-cita")
-    public ResponseEntity<MensajeDTO<String>> pagarCita(@Valid @RequestBody PagoCitaDTO pagoCitaDTO) throws Exception {
-        clienteServicio.pagoCita(pagoCitaDTO);
+    @PostMapping("/pagar")
+    public ResponseEntity<MensajeDTO<String>> pagar(@Valid @RequestBody MetodoPagoDTO metodoPagoDTO) throws Exception {
+        clienteServicio.pagar(metodoPagoDTO);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito"));
     }
 
     @GetMapping ("/filtrar-barbero-cita/{fecha}")
     public ResponseEntity<MensajeDTO<List<ItemBarberoCitaDTO>>> pagar(@PathVariable LocalDate fecha) throws Exception {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, clienteServicio.filtrarBarberoCita(fecha)));
-    }
-
-
-    @PostMapping("/pagar-inscripcion")
-    public ResponseEntity<MensajeDTO<String>> pagarInscripcion(@Valid @RequestBody PagoInscripcionDTO pagoInscripcionDTO) throws Exception {
-        clienteServicio.pagoInscripcion(pagoInscripcionDTO);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito"));
     }
 
 }
