@@ -14,7 +14,9 @@ public record PagoCitaDTO (
 
         String primerNombre,
 
-        String apellido
+        String apellido,
+        int idMetodo,
+        int idCliente
 ) {
 
 }

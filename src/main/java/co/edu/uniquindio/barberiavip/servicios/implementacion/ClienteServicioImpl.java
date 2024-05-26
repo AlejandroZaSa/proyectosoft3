@@ -220,8 +220,8 @@ public class ClienteServicioImpl implements ClienteServicio {
 
         Inscripcion inscripcionRegistrada = inscripcionRepository.save(inscripcion);
 
-        emailServicio.enviarEmail(new EmailDTO("Inscripcion al curso", cliente.get().getEmail(), "Se ha creado una inscripcion con codigo" +
-                inscripcionRegistrada.getId() + " curso "+inscripcionRegistrada.getCurso().getNombre()));
+        emailServicio.enviarEmail(new EmailDTO("Inscripcion curso", cliente.get().getEmail(), "Se ha creado una inscripcion con codigo " +
+                inscripcionRegistrada.getId() + ", curso: "+inscripcionRegistrada.getCurso().getNombre()));
 
         return inscripcionRegistrada.getId();
     }
@@ -284,36 +284,109 @@ public class ClienteServicioImpl implements ClienteServicio {
 
     @Override
     public int pagoInscripcion(PagoInscripcionDTO pagoInscripcionDTO) throws Exception {
-
         Optional<Inscripcion> inscripcion = inscripcionRepository.findById(pagoInscripcionDTO.idInscripcion());
 
         if (inscripcion.isEmpty()) {
             throw new Exception("No existe una inscripción con el código" + pagoInscripcionDTO.idInscripcion());
         }
 
-        MetodoPago metodoPago = new MetodoPago();
+        Optional<Cliente> cliente = clienteRepository.findById(pagoInscripcionDTO.idCliente());
 
+        if(cliente.isEmpty()){
+            throw new Exception("No existe un cliente con el codigo "+ pagoInscripcionDTO.idCliente());
+        }
+
+        MetodoPago metodoPago = obtenerMetodoPagoInscripcion(pagoInscripcionDTO,cliente.get());
+
+        Pago pago = crearPagoInscripcion(inscripcion.get(), metodoPago);
+        Pago pagoRegistrado = pagoRepository.save(pago);
+
+        inscripcion.get().setPago(pagoRegistrado);
+        inscripcion.get().setEstado(Estado.PAGADO);
+        Inscripcion inscripcionRegistrada = inscripcionRepository.save(inscripcion.get());
+
+        emailServicio.enviarEmail(new EmailDTO("Pago inscripcion", inscripcion.get().getCliente().getEmail(), "Haz pagado tu inscripcion con código " +
+                inscripcionRegistrada.getId()));
+
+        return metodoPago.getId();
+    }
+
+    private MetodoPago obtenerMetodoPagoInscripcion(PagoInscripcionDTO pagoInscripcionDTO, Cliente cliente) throws Exception {
+        MetodoPago metodoPago;
+
+        if (pagoInscripcionDTO.idMetodo() == 0) {
+            metodoPago = crearNuevoMetodoPagoInscripcion(pagoInscripcionDTO,cliente);
+            metodoPago = metodoPagoRepository.save(metodoPago);
+        } else {
+            Optional<MetodoPago> metodo = metodoPagoRepository.findById(pagoInscripcionDTO.idMetodo());
+            if (metodo.isEmpty()) {
+                throw new Exception("No hay un metodo de pago con el código " + pagoInscripcionDTO.idMetodo());
+            }
+            metodo.get().setCliente(cliente);
+            MetodoPago registrado = metodoPagoRepository.save(metodo.get());
+            metodoPago = registrado;
+        }
+
+        return metodoPago;
+    }
+
+    private MetodoPago obtenerMetodoPagoCita(PagoCitaDTO pagoCitaDTO, Cliente cliente) throws Exception {
+        MetodoPago metodoPago;
+
+        if (pagoCitaDTO.idMetodo() == 0) {
+            metodoPago = crearNuevoMetodoPagoCita(pagoCitaDTO,cliente);
+            metodoPago = metodoPagoRepository.save(metodoPago);
+        } else {
+            Optional<MetodoPago> metodo = metodoPagoRepository.findById(pagoCitaDTO.idMetodo());
+            if (metodo.isEmpty()) {
+                throw new Exception("No hay un metodo de pago con el código " + pagoCitaDTO.idMetodo());
+            }
+            metodo.get().setCliente(cliente);
+            MetodoPago registrado = metodoPagoRepository.save(metodo.get());
+            metodoPago = registrado;
+        }
+
+        return metodoPago;
+    }
+
+    private MetodoPago crearNuevoMetodoPagoInscripcion(PagoInscripcionDTO pagoInscripcionDTO, Cliente cliente) {
+        MetodoPago metodoPago = new MetodoPago();
         metodoPago.setApellido(pagoInscripcionDTO.apellido());
         metodoPago.setNumeroTarjeta(pagoInscripcionDTO.numeroTarjeta());
+        metodoPago.setCliente(cliente);
         metodoPago.setCodigoSeguridad(pagoInscripcionDTO.codigoSeguridad());
         metodoPago.setFechaExpiracion(pagoInscripcionDTO.fechaExpiracion());
         metodoPago.setPrimerNombre(pagoInscripcionDTO.primerNombre());
+        return metodoPago;
+    }
 
-        MetodoPago metodoPagoRegistrado = metodoPagoRepository.save(metodoPago);
+    private MetodoPago crearNuevoMetodoPagoCita(PagoCitaDTO pagoCitaDTO, Cliente cliente) {
+        MetodoPago metodoPago = new MetodoPago();
+        metodoPago.setApellido(pagoCitaDTO.apellido());
+        metodoPago.setNumeroTarjeta(pagoCitaDTO.numeroTarjeta());
+        metodoPago.setCodigoSeguridad(pagoCitaDTO.codigoSeguridad());
+        metodoPago.setCliente(cliente);
+        metodoPago.setFechaExpiracion(pagoCitaDTO.fechaExpiracion());
+        metodoPago.setPrimerNombre(pagoCitaDTO.primerNombre());
+        return metodoPago;
+    }
 
+    private Pago crearPagoInscripcion(Inscripcion inscripcion, MetodoPago metodoPago) {
         Pago pago = new Pago();
         pago.setEstado(Estado.PAGADO);
-        pago.setMetodoPago(metodoPagoRegistrado);
-        pago.setMonto(inscripcion.get().getCosto());
+        pago.setMetodoPago(metodoPago);
+        pago.setMonto(inscripcion.getCosto());
         pago.setFechaPago(LocalDate.now());
+        return pago;
+    }
 
-        Pago pagoRegistrado = pagoRepository.save(pago);
-        inscripcion.get().setPago(pagoRegistrado);
-        inscripcion.get().setEstado(Estado.PAGADO);
-
-        inscripcionRepository.save(inscripcion.get());
-
-        return metodoPagoRegistrado.getId();
+    private Pago crearPagoCita(SolicitudCita cita, MetodoPago metodoPago) {
+        Pago pago = new Pago();
+        pago.setEstado(Estado.PAGADO);
+        pago.setMetodoPago(metodoPago);
+        pago.setMonto(cita.getCosto());
+        pago.setFechaPago(LocalDate.now());
+        return pago;
     }
 
     @Override
@@ -325,29 +398,46 @@ public class ClienteServicioImpl implements ClienteServicio {
             throw new Exception("No existe una cita con el código" + pagoCitaDTO.idCita());
         }
 
-        MetodoPago metodoPago = new MetodoPago();
+        Optional<Cliente> cliente = clienteRepository.findById(pagoCitaDTO.idCliente());
 
-        metodoPago.setApellido(pagoCitaDTO.apellido());
-        metodoPago.setNumeroTarjeta(pagoCitaDTO.numeroTarjeta());
-        metodoPago.setCodigoSeguridad(pagoCitaDTO.codigoSeguridad());
-        metodoPago.setFechaExpiracion(pagoCitaDTO.fechaExpiracion());
-        metodoPago.setPrimerNombre(pagoCitaDTO.primerNombre());
+        if(cliente.isEmpty()){
+            throw new Exception("No existe un cliente con el codigo "+ pagoCitaDTO.idCliente());
+        }
 
-        MetodoPago metodoPagoRegistrado = metodoPagoRepository.save(metodoPago);
+        MetodoPago metodoPago = obtenerMetodoPagoCita(pagoCitaDTO, cliente.get());
 
-        Pago pago = new Pago();
-        pago.setEstado(Estado.PAGADO);
-        pago.setMetodoPago(metodoPagoRegistrado);
-        pago.setMonto(solicitudCita.get().getCosto());
-        pago.setFechaPago(LocalDate.now());
-
+        Pago pago = crearPagoCita(solicitudCita.get(), metodoPago);
         Pago pagoRegistrado = pagoRepository.save(pago);
+
         solicitudCita.get().setPago(pagoRegistrado);
         solicitudCita.get().setEstado(Estado.PAGADO);
+        SolicitudCita solicitudCitaRegistrada = solicitudCitaRepository.save(solicitudCita.get());
 
-        solicitudCitaRepository.save(solicitudCita.get());
+        emailServicio.enviarEmail(new EmailDTO("Pago cita", solicitudCita.get().getCliente().getEmail(), "Haz pagado tu cita con código " +
+                solicitudCitaRegistrada.getId()));
 
-        return metodoPagoRegistrado.getId();
+
+        return metodoPago.getId();
+    }
+
+    @Override
+    public List<MetodoPagoDTO> cargarMetodosPay(int codigoCliente) throws Exception {
+
+        List<MetodoPago> metodosPagos = metodoPagoRepository.findMetodosPagoCliente(codigoCliente);
+
+        if(metodosPagos.isEmpty()){
+
+            throw new Exception("No tiene métodos de pago guardados");
+        }
+
+        List<MetodoPagoDTO> metodosPagoDTOs = new ArrayList<>();
+
+        for (MetodoPago metodoPago : metodosPagos) {
+            metodosPagoDTOs.add(new MetodoPagoDTO(metodoPago.getId(),
+                    metodoPago.getNumeroTarjeta()));
+        }
+
+        return metodosPagoDTOs;
     }
 
     private String obtenerServicios(SolicitudCita s) {

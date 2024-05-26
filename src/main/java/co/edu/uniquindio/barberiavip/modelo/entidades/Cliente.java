@@ -42,4 +42,6 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente")
     private List<Inscripcion> inscripciones;
 
+    @OneToMany(mappedBy = "cliente")
+    private List<MetodoPago> metodosPago;
 }

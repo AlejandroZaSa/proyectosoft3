@@ -132,12 +132,12 @@ public class BarberiaImpl implements BarberiaServicio {
             if (admin == null) {
                 throw new Exception("El usuario con el email " + email + " no existe");
             } else {
-                emailServicio.enviarEmail(new EmailDTO("Recupera tu cuenta", email, "https://software-5ncs.onrender.com/recuperar-password/"+email));
+                emailServicio.enviarEmail(new EmailDTO("Recupera tu cuenta", admin.getCorreo() , "<a href=\"https://barberia-f4e43.web.app/recuperar-password/" + email + "\">Da click para recuperar tu contraseña</a>"));
 
             }
         } else {
 
-            emailServicio.enviarEmail(new EmailDTO("Recupera tu cuenta", email, "https://software-5ncs.onrender.com/recuperar-password/"+email));
+            emailServicio.enviarEmail(new EmailDTO("Recupera tu cuenta", cliente.getEmail(), "<a href=\"https://barberia-f4e43.web.app/recuperar-password/" + email + "\">Da click para recuperar tu contraseña</a>"));
 
         }
     }

@@ -14,7 +14,11 @@ public record PagoInscripcionDTO(
 
         String primerNombre,
 
-        String apellido
+        String apellido,
+
+        int idMetodo,
+        int idCliente
+
 ) {
 
 }

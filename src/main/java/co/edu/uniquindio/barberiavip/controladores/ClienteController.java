@@ -58,4 +58,8 @@ public class ClienteController {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito"));
     }
 
+    @GetMapping("/metodos-pay/{idCliente}")
+    public ResponseEntity<MensajeDTO<List<MetodoPagoDTO>>> cargarMetodosPay(@PathVariable int idCliente) throws Exception {
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, clienteServicio.cargarMetodosPay(idCliente)));
+    }
 }

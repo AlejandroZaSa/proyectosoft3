@@ -23,5 +23,7 @@ public interface ClienteServicio {
 
     int pagoCita(PagoCitaDTO pagoCitaDTO) throws Exception;
 
+    List<MetodoPagoDTO> cargarMetodosPay(int codigoCliente) throws Exception;
+
 
 }

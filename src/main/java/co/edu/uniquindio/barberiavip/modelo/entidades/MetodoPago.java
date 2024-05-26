@@ -37,4 +37,7 @@ public class MetodoPago {
     @OneToMany(mappedBy = "metodoPago")
     private List<Pago> pagos;
 
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Cliente cliente;
 }
