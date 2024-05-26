@@ -187,7 +187,7 @@ public class ClienteServicioImpl implements ClienteServicio {
         SolicitudCita citaRegistrada = solicitudCitaRepository.save(citaNueva);
 
         emailServicio.enviarEmail(new EmailDTO("Agendamiento de Cita", cliente.get().getEmail(), "Haz agendado una cita con fecha " +
-                citaRegistrada.getFecha() + " y hora " + citaRegistrada.getHora() + " con el barbero " + citaRegistrada.getBarbero().getNombreCompleto()));
+                citaRegistrada.getFecha() + " y hora " + citaRegistrada.getHora() + " con el barbero " + citaRegistrada.getBarbero().getNombreCompleto()+ " codigo " + citaRegistrada.getId()));
 
         return citaRegistrada.getId();
     }
@@ -219,6 +219,9 @@ public class ClienteServicioImpl implements ClienteServicio {
         inscripcion.setCliente(clienteEncontrado);
 
         Inscripcion inscripcionRegistrada = inscripcionRepository.save(inscripcion);
+
+        emailServicio.enviarEmail(new EmailDTO("Inscripcion al curso", cliente.get().getEmail(), "Se ha creado una inscripcion con codigo" +
+                inscripcionRegistrada.getId() + " curso "+inscripcionRegistrada.getCurso().getNombre()));
 
         return inscripcionRegistrada.getId();
     }
