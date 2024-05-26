@@ -19,6 +19,9 @@ public interface ClienteServicio {
 
     List<ItemSolicitudCitaDTO> cargarCitas(int codigoCliente) throws Exception;
 
-    int pagar(MetodoPagoDTO metodoPagoDTO) throws Exception;
+    int pagoInscripcion(PagoInscripcionDTO pagoInscripcionDTO) throws Exception;
+
+    int pagoCita(PagoCitaDTO pagoCitaDTO) throws Exception;
+
 
 }
