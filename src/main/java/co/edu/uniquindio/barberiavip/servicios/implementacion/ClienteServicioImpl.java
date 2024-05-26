@@ -182,7 +182,7 @@ public class ClienteServicioImpl implements ClienteServicio {
         citaNueva.setCosto(costoTotal);
         SolicitudCita citaRegistrada = solicitudCitaRepository.save(citaNueva);
 
-        emailServicio.enviarEmail(new EmailDTO("Agendamiento de Cita", cliente.get().getEmail(), "Haz agendado una cita con fecha " +
+        emailServicio.enviarEmail(new EmailDTO("Agendamiento de Cita BarberiaVIP", cliente.get().getEmail(), "Haz agendado una cita con codigo "+citaRegistrada.getId()+" fecha " +
                 citaRegistrada.getFecha() + " y hora " + citaRegistrada.getHora() + " con el barbero " + citaRegistrada.getBarbero().getNombreCompleto()));
 
         return citaRegistrada.getId();
@@ -215,6 +215,9 @@ public class ClienteServicioImpl implements ClienteServicio {
         inscripcion.setCliente(clienteEncontrado);
 
         Inscripcion inscripcionRegistrada = inscripcionRepository.save(inscripcion);
+
+        emailServicio.enviarEmail(new EmailDTO("Inscripción Curso BarberiaVIP", cliente.get().getEmail(), "Haz realizado una inscripción con código "+inscripcionRegistrada.getId()+" y fecha " +
+                inscripcionRegistrada.getFechaInscripcion()));
 
         return inscripcionRegistrada.getId();
     }
