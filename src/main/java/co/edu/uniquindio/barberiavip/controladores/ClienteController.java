@@ -43,7 +43,7 @@ public class ClienteController {
     @PostMapping("/pagar-cita")
     public ResponseEntity<MensajeDTO<String>> pagarCita(@Valid @RequestBody PagoCitaDTO pagoCitaDTO) throws Exception {
         clienteServicio.pagoCita(pagoCitaDTO);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito"));
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Pago realizado con éxito!"));
     }
 
     @GetMapping ("/filtrar-barbero-cita/{fecha}")
